@@ -11,7 +11,7 @@ db = SQLAlchemy() # create a db object
 def create_app():
     app = Flask(__name__)
     CORS(app, resources={
-        r"/*": {"origins": "http://localhost:3000"}
+        r"/*": {"origins": "http://localhost:3000"}  # specify the link of the frontend
     })
     
     app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
@@ -23,7 +23,7 @@ def create_app():
         from . import models  # Import models
         db.create_all()      # Create tables
     
-    # blueprint for auth routes
+    # blueprint for auth routes - so basically you can create blueprints for different features!
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
     
