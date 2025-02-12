@@ -10,7 +10,7 @@ class User(UserMixin, db.Model):
     __tablename__="users"
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    email = db.Column(db.String(100), unique=True, nullable=False, index=True) # the email must be unique
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(1000), nullable=False)
     
@@ -33,11 +33,16 @@ class Card(db.Model):
     __tablename__="cards"
     
     id = db.Column(db.Integer, primary_key=True)
+    # card's information
     card_question = db.Column(db.String(1000), nullable=False)
     card_answer = db.Column(db.String(1000), nullable=False)
+    
+    # checkpoint for reviewing
     first_reviewed = db.Column(db.Boolean, default=False)
     second_reviewed = db.Column(db.Boolean, default=False)
     last_reviewed = db.Column(db.Boolean, default=False)
+    
+    # connect to the folder (study decks)
     folder_id = db.Column(db.Integer, db.ForeignKey("folders.id", ondelete="CASCADE"))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

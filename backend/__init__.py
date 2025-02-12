@@ -13,7 +13,12 @@ login_manager = LoginManager()  # create a login manager object
 def create_app():
     app = Flask(__name__)
     CORS(app, resources={
-        r"/*": {"origins": "http://localhost:3000"}
+        r"/*": {
+            "origins": ["http://localhost:3000", "http://127.0.0.1:5000"],
+            "methods": ["GET", "POST", "PUT", "DELETE"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+            }
     })
     
     app.config['SECRET_KEY'] = environ.get('SECRET_KEY')
@@ -34,6 +39,7 @@ def create_app():
     with app.app_context():
         from . import models
         db.create_all()
+        print("Database tables created successfully")
     
     # Register the blueprints of different features
     from .auth import auth as auth_blueprint

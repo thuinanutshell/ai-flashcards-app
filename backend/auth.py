@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, session
+from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, current_user
 from .models import User
@@ -41,6 +42,7 @@ def login_post():
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
+    # Remove the @cross_origin() decorator since we're testing directly
     if current_user.is_authenticated:
         return jsonify({'error': 'Already logged in'}), 400
         
@@ -70,7 +72,7 @@ def signup_post():
     new_user = User(
         email=email,
         name=name,
-        password=generate_password_hash(password, method='sha256')
+        password=generate_password_hash(password, method='pbkdf2:sha256')
     )
     
     try:
