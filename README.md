@@ -1,7 +1,7 @@
 # AI Flashcards App
 ## Core Features
-- [ ] Authentication (Traditional)
+- [x] Authentication (Traditional)
 - [ ] Authentication (OAuth)
-- [ ] CRUD Operations: Create, Read, Update and Delete Cards
+- [x] CRUD Operations: Create, Read, Update and Delete Cards
 - [ ] AI-generated flashcards from users' input (text and PDFs)
-- [ ] Folders to organize cards
+- [x] Folders to organize cards
