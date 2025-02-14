@@ -2,7 +2,7 @@ const API_URL = 'http://127.0.0.1:5000'; // this tells you the link of the backe
 
 export const authService = {
   signup: async (userData) => {
-    const response = await fetch(`${API_URL}/signup`, { // this fetches the data from the backend
+    const response = await fetch(`${API_URL}/auth/signup`, { // this fetches the data from the backend
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
@@ -11,7 +11,7 @@ export const authService = {
   },
 
   login: async (credentials) => {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
