@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False, index=True) # the email must be unique
     password = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(1000), nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
     
     # use back_populates to establish a bidirectional relationship between tables
     # also use cascade to update deletion automatically

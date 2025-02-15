@@ -1,31 +1,30 @@
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Login from './components/auth/Login';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import SignUp from './components/auth/SignUp';
-import { AuthProvider } from './context/AuthContext';
-import HomePage from './pages/HomePage';
-import NotFoundPage from './pages/NotFoundPage';
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from './pages/SignupPage';
+import Dashboard from './pages/Dashboard';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './auth/ProtectedRoute';
 
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-}
+const App = () => {
+    return (
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    <Route path="/auth/login" element={<LoginPage />} />
+                    <Route path="/auth/signup" element={<SignupPage />} />
+                    <Route 
+                        path="/folders" 
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        } 
+                    />
+                </Routes>
+            </Router>
+        </AuthProvider>
+    );
+};
 
 export default App;
