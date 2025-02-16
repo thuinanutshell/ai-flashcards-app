@@ -2,10 +2,12 @@ const API_BASE_URL = 'http://127.0.0.1:5000';
 
 const getHeaders = () => ({
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+  'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+  'Accept': 'application/json'
 });
 
 const defaultOptions = {
+  mode: 'cors',
   credentials: 'include',
   headers: getHeaders()
 };
@@ -53,7 +55,6 @@ const api = {
     }),
     delete: (id) => fetch(`${API_BASE_URL}/folders/delete_folder/${id}`, {
       ...defaultOptions,
-      headers: getHeaders(),
       method: 'DELETE'
     })
   }

@@ -44,15 +44,8 @@ const FolderList = () => {
         return;
       }
 
-      const response = await fetch('http://127.0.0.1:5000/folders/delete_folder', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ folder_name: folder.name })
-      });
-
+      const response = await api.folders.delete(folder.id); // Pass folder.id here
+      
       if (response.status === 401) {
         navigate('/login');
         return;

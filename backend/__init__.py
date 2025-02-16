@@ -21,7 +21,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     
-    # Configure CORS
+    # Configure CORS to communicate with the frontend
     CORS(app, supports_credentials=True, resources={
         r"/*": {
             "origins": ["http://localhost:3000"],
@@ -46,7 +46,7 @@ def create_app():
         PERMANENT_SESSION_LIFETIME=timedelta(days=1)
     )
 
-    # Ensure sessions are permanent by default
+    # Ensure sessions are permanent by default - why?
     @app.before_request
     def make_session_permanent():
         session.permanent = True
@@ -56,7 +56,7 @@ def create_app():
 
     # Update login manager configuration
     login_manager.init_app(app)
-    login_manager.login_view = None  # Disable redirect
+    login_manager.login_view = 'auth.login' # Redirect back to login page if user is unauthorized
     login_manager.session_protection = "strong"
 
     @login_manager.user_loader

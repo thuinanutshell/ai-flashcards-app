@@ -1,4 +1,4 @@
-import FolderList from '../cards/FolderList';
+import FolderList from '../folders/FolderList';
 
 const Dashboard = () => {
   return (
