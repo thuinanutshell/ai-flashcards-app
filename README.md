@@ -20,6 +20,10 @@
 - [ ] Check progress for reviewing each card (each concept should be reviewed 4 times - forgetting curve)
 - [ ] Check progress for each folder (the proportion of cards fully reviewed)
 
+## Nice-to-have Features
+- [ ] Monthly exams generated from the user's card database
+- [ ] Collaborate with friends to create cards
+
 ## Run Locally (on Mac)
 ### Clone Github Repo
 ```shell
