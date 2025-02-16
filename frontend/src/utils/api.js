@@ -1,10 +1,13 @@
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
-const getHeaders = () => ({
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-  'Accept': 'application/json'
-});
+const getHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+    'Accept': 'application/json'
+  };
+};
 
 const defaultOptions = {
   mode: 'cors',
@@ -57,10 +60,12 @@ const api = {
       ...defaultOptions,
       method: 'DELETE'
     }),
-    getById: (id) => fetch(`${API_BASE_URL}/folders/${id}`, {
-      ...defaultOptions,
-      method: 'GET'
-    })
+    getById: (id) => 
+      fetch(`${API_BASE_URL}/folders/${id}`, {
+        ...defaultOptions,
+        method: 'GET',
+        headers: getHeaders()
+      })
   },
   cards: {
     getAll: (folderName) => fetch(`${API_BASE_URL}/cards/get_cards${folderName ? `?folder_name=${folderName}` : ''}`, {
@@ -77,12 +82,25 @@ const api = {
         answer: data.answer
       })
     }),
-    update: (data) => fetch(`${API_BASE_URL}/cards/update_card`, {
-      ...defaultOptions,
-      method: 'PUT',
-      headers: getHeaders(),
-      body: JSON.stringify(data)
-    }),
+    update: async (cardId, data) => {
+      const response = await fetch(`${API_BASE_URL}/cards/update_card`, {
+        ...defaultOptions,
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify({
+          card_id: cardId,
+          question: data.question,
+          answer: data.answer
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update card');
+      }
+      
+      return response;
+    },
     delete: (cardId) => fetch(`${API_BASE_URL}/cards/delete_card`, {
       ...defaultOptions,
       method: 'DELETE',
@@ -94,7 +112,7 @@ const api = {
         ...defaultOptions,
         method: 'GET',
         headers: getHeaders()
-      }),
+      })
   }
 };
 
