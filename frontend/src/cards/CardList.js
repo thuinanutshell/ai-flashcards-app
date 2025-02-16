@@ -1,11 +1,13 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, Button, Card, CardContent, IconButton, List, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../utils/api';
 import CreateCardDialog from './CreateCardDialog';
+import EditCardDialog from './EditCardDialog';
 
 const CardList = () => {
   const { folderId } = useParams();
@@ -13,45 +15,74 @@ const CardList = () => {
   const [cards, setCards] = useState([]);
   const [folder, setFolder] = useState(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [error, setError] = useState('');
   const [visibleAnswers, setVisibleAnswers] = useState({});
 
-  useEffect(() => {
-    if (!folderId) {
-      navigate('/folders');
-      return;
-    }
-    loadFolder();
-    loadCards();
-  }, [folderId, navigate]);
-
-  const loadFolder = async () => {
+  const loadFolder = useCallback(async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/auth/login');
+        return;
+      }
+
       const response = await api.folders.getById(folderId);
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/auth/login');
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error('Failed to load folder');
       }
+      
       const data = await response.json();
       setFolder(data);
     } catch (err) {
       setError('Failed to load folder');
       console.error('Error loading folder:', err);
     }
-  };
+  }, [folderId, navigate]);
 
-  const loadCards = async () => {
+  const loadCards = useCallback(async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/auth/login');
+        return;
+      }
+
       const response = await api.cards.getByFolderId(folderId);
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/auth/login');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to load cards');
       }
+      
       const data = await response.json();
       setCards(data);
     } catch (err) {
       setError('Failed to load cards');
       console.error('Error loading cards:', err);
     }
-  };
+  }, [folderId, navigate]);
+
+  useEffect(() => {
+    if (!folderId) {
+      navigate('/folders');
+      return;
+    }
+
+    loadFolder();
+    loadCards();
+  }, [folderId, navigate, loadFolder, loadCards]);
 
   const handleCreateCard = async (cardData) => {
     try {
@@ -73,6 +104,24 @@ const CardList = () => {
     }
   };
 
+  const handleEditCard = async (updatedCard) => {
+    try {
+      await api.cards.update(updatedCard.id, {
+        question: updatedCard.question,
+        answer: updatedCard.answer
+      });
+
+      setCards(cards.map(card => 
+        card.id === updatedCard.id ? updatedCard : card
+      ));
+      setIsEditDialogOpen(false);
+      setError('');
+    } catch (err) {
+      setError(err.message || 'Failed to update card');
+      console.error('Error updating card:', err);
+    }
+  };
+
   const handleDeleteCard = async (cardId) => {
     try {
       const response = await api.cards.delete(cardId);
@@ -91,6 +140,11 @@ const CardList = () => {
       ...prev,
       [cardId]: !prev[cardId]
     }));
+  };
+
+  const openEditDialog = (card) => {
+    setSelectedCard(card);
+    setIsEditDialogOpen(true);
   };
 
   return (
@@ -152,6 +206,12 @@ const CardList = () => {
                     </IconButton>
                   )}
                   <IconButton 
+                    onClick={() => openEditDialog(card)}
+                    sx={{ mr: 1 }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton 
                     onClick={() => handleDeleteCard(card.id)}
                   >
                     <DeleteIcon />
@@ -167,6 +227,13 @@ const CardList = () => {
         open={isCreateDialogOpen}
         onClose={() => setIsCreateDialogOpen(false)}
         onSubmit={handleCreateCard}
+      />
+      
+      <EditCardDialog
+        open={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+        onSubmit={handleEditCard}
+        card={selectedCard}
       />
     </Box>
   );
