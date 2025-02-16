@@ -19,3 +19,24 @@
 - [ ] Attach media (including URLs, and text materials) to the card
 - [ ] Check progress for reviewing each card (each concept should be reviewed 4 times - forgetting curve)
 - [ ] Check progress for each folder (the proportion of cards fully reviewed)
+
+## Run Locally (on Mac)
+### Clone Github Repo
+```shell
+git clone https://github.com/thuinanutshell/ai-flashcards-app
+```
+### Backend
+```shell
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+export PYTHONPATH={project-absolute-path}
+python3 run.py
+```
+### Frontend
+```shell
+cd frontend
+npm install
+npm start
+```
