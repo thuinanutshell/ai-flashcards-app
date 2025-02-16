@@ -80,3 +80,17 @@ def delete_folder(folder_id):
     db.session.commit()
     
     return jsonify({'message': 'Successfully deleted the folder'}), 200
+
+@folders.route('/<int:folder_id>', methods=['GET'])
+@login_required
+@cross_origin(supports_credentials=True)
+def get_folder(folder_id):
+    folder = Folder.query.filter_by(id=folder_id, user_id=current_user.id).first()
+    
+    if not folder:
+        return jsonify({'error': 'Folder not found'}), 404
+        
+    return jsonify({
+        'id': folder.id,
+        'name': folder.folder_name
+    }), 200

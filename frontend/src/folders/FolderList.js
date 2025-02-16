@@ -64,8 +64,8 @@ const FolderList = () => {
     }
   };
 
-  const handleFolderClick = (folderId) => {
-    navigate(`/folders/${folderId}`);
+  const handleFolderClick = (folder) => {
+    navigate(`/folders/${folder.id}/cards`);
   };
 
   const handleEditClick = (event, folder) => {
@@ -107,7 +107,7 @@ const FolderList = () => {
           <ListItem 
             key={folder.id} 
             divider 
-            onClick={() => handleFolderClick(folder.id)}
+            onClick={() => handleFolderClick(folder)}
             sx={{ cursor: 'pointer' }}
           >
             <ListItemText primary={folder.name} />
