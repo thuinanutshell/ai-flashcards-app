@@ -8,7 +8,7 @@ from . import db
 auth = Blueprint('auth', __name__)
 
 @auth.route('/status')
-@cross_origin(supports_credentials=True)
+@cross_origin(supports_credentials=True) # what exactly does this do?
 def auth_status():
     # Check Authorization header first
     auth_header = request.headers.get('Authorization')
@@ -77,6 +77,7 @@ def login():
         return jsonify({'error': str(e)}), 500
 
 @auth.route('/signup', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def signup_post():
     if not request.is_json:
         return jsonify({'error': 'Content-Type must be application/json'}), 415

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import ProtectedRoute from './auth/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
+import CardListPage from './pages/CardListPage';
+import Dashboard from './pages/Dashboard';
 import LoginPage from "./pages/LoginPage";
 import SignupPage from './pages/SignupPage';
-import Dashboard from './pages/Dashboard';
-import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './auth/ProtectedRoute';
 
 const App = () => {
     return (
@@ -18,6 +19,14 @@ const App = () => {
                         element={
                             <ProtectedRoute>
                                 <Dashboard />
+                            </ProtectedRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/folders/:folderId/cards" 
+                        element={
+                            <ProtectedRoute>
+                                <CardListPage />
                             </ProtectedRoute>
                         } 
                     />

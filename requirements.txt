@@ -1,4 +1,6 @@
 Flask>=2.2
 flask-sqlalchemy=2.0.37
-flask-login=0.6.3
+flask-login=0.63
+flask_cors=5.0.0
+python-dotenv=1.0.1
 pip=25.0

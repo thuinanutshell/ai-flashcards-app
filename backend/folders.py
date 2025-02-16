@@ -20,7 +20,6 @@ def get_folders():
 @login_required
 @cross_origin(supports_credentials=True)
 def create_folder():
-    # Remove session check since we're using flask_login
     data = request.get_json()
     folder_name = data.get('folder_name')
 
@@ -64,14 +63,15 @@ def update_folder():
 
     return jsonify({'message': 'Successfully edited the folder'}), 200
 
-@folders.route('/delete_folder', methods=['DELETE'])
+@folders.route('/delete_folder/<int:folder_id>', methods=['DELETE', 'OPTIONS'])
 @login_required
 @cross_origin(supports_credentials=True)
-def delete_folder():
-    data = request.get_json()
-    folder_name = data.get('folder_name')
+def delete_folder(folder_id):
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        return '', 200
 
-    folder = Folder.query.filter_by(folder_name=folder_name, user_id=current_user.id).first()
+    folder = Folder.query.filter_by(id=folder_id, user_id=current_user.id).first()
 
     if not folder:
         return jsonify({'error': 'Folder not found or unauthorized'}), 404
@@ -80,3 +80,17 @@ def delete_folder():
     db.session.commit()
     
     return jsonify({'message': 'Successfully deleted the folder'}), 200
+
+@folders.route('/<int:folder_id>', methods=['GET'])
+@login_required
+@cross_origin(supports_credentials=True)
+def get_folder(folder_id):
+    folder = Folder.query.filter_by(id=folder_id, user_id=current_user.id).first()
+    
+    if not folder:
+        return jsonify({'error': 'Folder not found'}), 404
+        
+    return jsonify({
+        'id': folder.id,
+        'name': folder.folder_name
+    }), 200

@@ -2,10 +2,12 @@ const API_BASE_URL = 'http://127.0.0.1:5000';
 
 const getHeaders = () => ({
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+  'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+  'Accept': 'application/json'
 });
 
 const defaultOptions = {
+  mode: 'cors',
   credentials: 'include',
   headers: getHeaders()
 };
@@ -53,9 +55,46 @@ const api = {
     }),
     delete: (id) => fetch(`${API_BASE_URL}/folders/delete_folder/${id}`, {
       ...defaultOptions,
-      headers: getHeaders(),
       method: 'DELETE'
+    }),
+    getById: (id) => fetch(`${API_BASE_URL}/folders/${id}`, {
+      ...defaultOptions,
+      method: 'GET'
     })
+  },
+  cards: {
+    getAll: (folderName) => fetch(`${API_BASE_URL}/cards/get_cards${folderName ? `?folder_name=${folderName}` : ''}`, {
+      ...defaultOptions,
+      headers: getHeaders()
+    }),
+    create: (data) => fetch(`${API_BASE_URL}/cards/create_card`, {
+      ...defaultOptions,
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        folder_name: data.folder_name,
+        question: data.question,
+        answer: data.answer
+      })
+    }),
+    update: (data) => fetch(`${API_BASE_URL}/cards/update_card`, {
+      ...defaultOptions,
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    }),
+    delete: (cardId) => fetch(`${API_BASE_URL}/cards/delete_card`, {
+      ...defaultOptions,
+      method: 'DELETE',
+      headers: getHeaders(),
+      body: JSON.stringify({ card_id: cardId })
+    }),
+    getByFolderId: (folderId) => 
+      fetch(`${API_BASE_URL}/cards/get_cards?folder_id=${folderId}`, {
+        ...defaultOptions,
+        method: 'GET',
+        headers: getHeaders()
+      }),
   }
 };
 

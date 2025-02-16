@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
+from flask_cors import cross_origin
 from .models import Card, Folder
 from . import db
 
@@ -8,8 +9,9 @@ cards = Blueprint('cards', __name__)
 
 @cards.route('/get_cards', methods=['GET'])
 @login_required
+@cross_origin(supports_credentials=True)
 def get_cards():
-    folder_name = request.args.get('folder_name')
+    folder_id = request.args.get('folder_id')
     card_id = request.args.get('card_id')
 
     if card_id:
@@ -33,10 +35,10 @@ def get_cards():
             'last_reviewed_at': card.last_reviewed_at
         }), 200
 
-    elif folder_name:
-        # Get all cards in a folder
+    elif folder_id:
+        # Get all cards in a folder by folder_id
         folder = Folder.query.filter_by(
-            folder_name=folder_name,
+            id=folder_id,
             user_id=current_user.id
         ).first()
         
@@ -73,6 +75,7 @@ def get_cards():
 
 @cards.route('/create_card', methods=['POST'])
 @login_required
+@cross_origin(supports_credentials=True)
 def create_card():
     data = request.get_json()
     
@@ -114,6 +117,7 @@ def create_card():
 
 @cards.route('/update_card', methods=['PUT'])
 @login_required
+@cross_origin(supports_credentials=True)
 def update_card():
     data = request.get_json()
     
@@ -163,6 +167,7 @@ def update_card():
 
 @cards.route('/delete_card', methods=['DELETE'])
 @login_required
+@cross_origin(supports_credentials=True)
 def delete_card():
     data = request.get_json()
     

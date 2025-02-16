@@ -3,8 +3,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Box, Button, IconButton, List, ListItem, ListItemSecondaryAction, ListItemText, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreateFolderDialog from '../cards/CreateFolderDialog';
 import api from '../utils/api';
+import CreateFolderDialog from './CreateFolderDialog';
 import EditFolderDialog from './EditFolderDialog';
 
 const FolderList = () => {
@@ -44,15 +44,8 @@ const FolderList = () => {
         return;
       }
 
-      const response = await fetch('http://127.0.0.1:5000/folders/delete_folder', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ folder_name: folder.name })
-      });
-
+      const response = await api.folders.delete(folder.id); // Pass folder.id here
+      
       if (response.status === 401) {
         navigate('/login');
         return;
@@ -71,8 +64,8 @@ const FolderList = () => {
     }
   };
 
-  const handleFolderClick = (folderId) => {
-    navigate(`/folders/${folderId}`);
+  const handleFolderClick = (folder) => {
+    navigate(`/folders/${folder.id}/cards`);
   };
 
   const handleEditClick = (event, folder) => {
@@ -114,7 +107,7 @@ const FolderList = () => {
           <ListItem 
             key={folder.id} 
             divider 
-            onClick={() => handleFolderClick(folder.id)}
+            onClick={() => handleFolderClick(folder)}
             sx={{ cursor: 'pointer' }}
           >
             <ListItemText primary={folder.name} />
