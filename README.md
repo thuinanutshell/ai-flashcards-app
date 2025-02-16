@@ -14,7 +14,7 @@
 
 ## CRUD Operations Requirement
 - [x] Create, Read, Update and Delete Folders
-- [ ] Create, Read, Update and Delete Cards
+- [x] Create, Read, Update and Delete Cards
 - [ ] AI-generated flashcards from users' input including prompt (text) and PDFs
 - [ ] Attach media (including URLs, and text materials) to the card
 - [ ] Check progress for reviewing each card (each concept should be reviewed 4 times - forgetting curve)
